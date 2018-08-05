@@ -1,0 +1,55 @@
+<html>
+    <head>
+        <title>Chat Room</title>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    </head>
+    <body>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('#myMessage').val("BRandon");
+                var socket = io.connect('http://127.0.0.1:5000');
+                
+                // Now we are going to listen for a new user to connect
+                socket.on('connect', function(){
+                    // The send method, sends a 'message' event to
+                    // the socket. It basically emits a 'message' event
+                    socket.send('New User has connected!');
+                });
+
+                // Now we are going to listen for "message" type messages
+                // on the client side(index.html), when a message arrives
+                // we call the callback function
+                socket.on('message', function(msg) {
+                    // JQuery syntax to select the html element with the
+                    // id of "message" by selecting $('#message')
+                    // Since it is a <ul>(unordered list) we are going to append a
+                    // list item with the message that was sent
+                    $('#messages').append('<li>'+msg+'</li>');
+                    console.log('Received message');
+                });
+
+                // Now we are going to add a click event to the button
+                // with id='sendbutton'.
+                // When the button is clicked, we are going to 
+                // send( emit a 'message' event) with the contents of the
+                // html element with id = 'myMessage'
+                // Then we are going to emit a 'Brandon' event with a number
+                // Lastly, we are going to clear the text from the 'myMessage' field
+
+                $('#sendbutton').on('click', function() {
+                    socket.send($('#myMessage').val());
+                    //This appends the message on the client's board that sent the
+                    // message, but no one else's board. The server must initiate that
+                    // request.
+                    $('#messages').append("<li>"+$('#myMessage').val()+"</li>");
+                    socket.emit("Brandon",89343);
+                    $('#myMessage').val('');
+                }); 
+            });
+        </script>
+        <ul id="messages"></ul>
+        <input type="text" id="myMessage" placeholder="4 to 8 characters long">
+        <button id="sendbutton">Send</button>
+    </body>
+</html>
