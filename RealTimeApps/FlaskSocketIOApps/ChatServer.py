@@ -24,7 +24,7 @@ def ConnectionEvent(val):
 
 @app.route("/")
 def index():
-   return send_from_directory('./','index.html')
+   return send_from_directory('./','ChatClient.html')
 
 if __name__ == '__main__':
     print("The server is running")
